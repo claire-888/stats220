@@ -1,0 +1,118 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+h2 {
+  color: #5e4840;
+  font-weight: bold;
+}
+body {
+  background-color: #ead6d0;
+}
+```
+
+## Analysis of University Students’ Study Behaviour
+
+This dynamic report examines the study behaviours of university students, focusing on their choice of study method, preferred study location, and group study patterns. 
+
+```{r}
+library(tidyverse)
+
+logged_data <- read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vR19ZIaM6z1es1-k13KiAwnOBJnEcQXaP2Z8OVKSmCbSSsfzUnppUMhpT8cZX7ZbAcWYo2j8tR97UDw/pub?gid=1803913685&single=true&output=csv')
+
+latest_data <- logged_data %>%
+  rename(time_stamp = 1,
+    study_methods= 2,
+    study_setting=3,
+    number_of_people_in_the_study_group = 4)
+
+most_common_group <- latest_data %>%
+  count(number_of_people_in_the_study_group) %>%
+  filter(n == max(n, na.rm = TRUE)) %>%
+  pull(number_of_people_in_the_study_group)
+
+most_common_method <- latest_data %>%
+  count(study_methods) %>%
+  filter(n == max(n)) %>%
+  pull(study_methods)
+
+# Dynamic comment
+paste(
+  "Based on the data collected, most students tend to study alone, with single-person study groups being the most common (group size =",  
+  most_common_group, "). "
+)
+paste(
+  "Additionally, the combination of",  
+  most_common_method, "was observed to be the most popular study method."
+)
+```
+
+the first graph performs the study group sizes 
+
+```{r}
+
+#renaming the variables in the logged_data.
+latest_data <- logged_data %>%
+  rename(time_stamp = 1,
+    study_methods= 2,
+    study_setting=3,
+    number_of_people_in_the_study_group = 4)
+
+min_group <- min(latest_data$number_of_people_in_the_study_group, na.rm = TRUE)
+num_min_group <- sum(latest_data$number_of_people_in_the_study_group == min_group, na.rm = TRUE)
+
+# In this step, we create a new column that is true for the minimum number of people and false for all others. This allows us to highlight the smallest group in the bar chart by changing its color.
+
+highlight_data <- latest_data %>%
+  mutate(first_group = number_of_people_in_the_study_group == min(number_of_people_in_the_study_group, na.rm = TRUE))
+
+# plot showing that the distribution of group size with groups with minimum number of people stands out. The legend of the plot has been removed for a cleaner version.
+
+highlight_data %>%
+ggplot(aes(x = number_of_people_in_the_study_group, fill = first_group)) +
+  geom_bar() +
+  labs(
+    title = "Distribution of Study Group Sizes",
+    x = "Number of People",
+    y = "Count"
+  ) +
+  scale_y_continuous(breaks = seq(0,10, by =2)) +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) +
+  scale_fill_manual(values = c("TRUE" = "#F19280", "FALSE" = "#EBB9BA")) +
+  guides(fill = "none")
+```
+
+
+
+the secons graph illustrated the most common study method observed. 
+
+```{r}
+method_counts <- latest_data %>%
+  count(study_methods)
+most_used <- method_counts %>%
+  filter(n == max(n))
+
+# plot shows study method observed with the method used most stands out. The legend of the plot has been removed for a cleaner version.
+
+method_counts %>%
+  mutate(is_max = n == max(n)) %>%
+  ggplot(aes(x = study_methods, y = n, fill = is_max)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Study Method Used",
+    x = "Study Method",
+    y = "Count"
+  ) +  
+  scale_fill_manual(values = c("TRUE" = "#F19280", "FALSE" = "#EBB9BA")) + 
+  guides(fill = "none") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
