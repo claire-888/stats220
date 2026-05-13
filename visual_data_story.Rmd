@@ -1,0 +1,109 @@
+---
+title: how students study in different spaces, methods and group sizes
+output: html_document
+---
+
+```{css, echo = FALSE}
+
+body {
+  background-color: #fffaf5;
+  color: #9ec2dc;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #ee93b8;
+  font-weight: 700;
+}
+
+h2 {
+  color: #b282bb;
+  border-bottom: 3px solid #fecc88;
+  padding-bottom: 6px;
+}
+
+p {
+  font-size: 16px;
+}
+
+img {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+
+}
+
+.caption {
+  color: #f08c5a;
+  font-size: 14px;
+  font-style: italic;
+}
+
+```
+
+
+```{=html}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+```
+
+```{js}
+$(function() {
+  $(".level2").css('visibility', 'hidden');
+  $(".level2").first().css('visibility', 'visible');
+  $(".container-fluid").height($(".container-fluid").height() + 300);
+  $(window).on('scroll', function() {
+    $('h2').each(function() {
+      var h2Top = $(this).offset().top - $(window).scrollTop();
+      var windowHeight = $(window).height();
+      if (h2Top >= 0 && h2Top <= windowHeight / 2) {
+        $(this).parent('div').css('visibility', 'visible');
+      } else if (h2Top > windowHeight / 2) {
+        $(this).parent('div').css('visibility', 'hidden');
+      }
+    });
+  });
+})
+```
+
+```{css}
+.figcaption {display: none}
+```
+
+## what the data shows?
+
+
+
+This visual data shows observed students study behaviour. The data was collected through a study behaviour observation form and includes information about when students was observed, where students were studying and what study method they use and how many people in each study group. The aim of this visual data story is to understand how different study settings relate to group size, which study methods were most common, and how study group size changed across the observation period. 
+
+
+
+## 1. Study setting and Group size
+
+
+
+The first part of the analysis looks at whether some study settings had bigger or smaller groups. The bar chart below compares the average number of people in each setting. The group area had the largest average group size. Other places usually had about one to two people. This shows that students were more likely to study with others in the group area. In other spaces, students mostly studied alone or in pairs. This suggests that the type of study space can affect whether students study alone or in groups.
+
+
+![plot1: Average Study Group Size by Study Setting](plot1.png)
+
+
+## 2. Study methods 
+
+
+The second part of the story looks at the types of study methods students were using. Most observations included more than one method, so each method was counted separately in this plot. The horizontal bar chart shows how many times each study method was observed. The longest bar shows the most common method. From the chart, laptops were the most commonly used study method, which shows that many students chose to use laptops for studying.
+
+
+
+![plot2: Most Common Study Methods Observed](plot2.png)
+
+
+## 3. Study group size over time
+
+
+The third part of the story uses a scatter plot to show how group size changed during the day. It helps show whether bigger groups appeared at certain times, and whether some study settings were more active at different times. In this plot, there is no very clear pattern showing that larger groups only appeared at one specific time. However, bigger groups seemed to appear more during daytime hours than at night.
+
+
+![plot3: Study Group Size Over Time](plot3.png)
